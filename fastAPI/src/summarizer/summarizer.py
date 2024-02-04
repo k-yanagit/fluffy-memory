@@ -4,7 +4,7 @@ This program uses the BART model to process legal texts. It connects to a Postgr
 If an explanation is not found in the database, it uses the BART model to generate a description for the given legal term or text.
 """
 
-from transformers import BartForConditionalGeneration, BartTokenizer
+from transformers import BartForConditionalGeneration, BartTokenizer, T5ForConditionalGeneration, T5Tokenizer, GPT2LMHeadModel, GPT2Tokenizer
 from databases import Database
 
 # Database connection configuration
@@ -24,6 +24,9 @@ class LegalTextProcessor:
         self.tokenizer = BartTokenizer.from_pretrained(self.model_name)
         self.model = BartForConditionalGeneration.from_pretrained(self.model_name)
         self.database = Database(DATABASE_URL)
+        self.gpt2_model_name = 'rinna/japanese-gpt2-medium'
+        self.gpt2_tokenizer = GPT2Tokenizer.from_pretrained(self.gpt2_model_name)
+        self.gpt2_model = GPT2LMHeadModel.from_pretrained(self.gpt2_model_name)
 
     async def _connect_to_db(self):
         """
@@ -36,6 +39,21 @@ class LegalTextProcessor:
         Disconnects from the PostgreSQL database.
         """
         await self.database.disconnect()
+
+    async def _simplify_description(self, description: str) -> str:
+        """
+        Simplifies the language of the description using the Japanese GPT-2 model.
+        :param description: The legal description or generated text.
+        :return: A simplified version of the description.
+        """
+        # Prepare the text for the GPT-2 model
+        input_ids = self.gpt2_tokenizer.encode(description, return_tensors='pt', max_length=512, truncation=True)
+
+        # Generate the simplified description
+        outputs = self.gpt2_model.generate(input_ids, max_length=200, num_beams=4, early_stopping=True)
+        simplified_description = self.gpt2_tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        return simplified_description
 
     async def generate_description(self, text: str) -> str:
         """
@@ -60,10 +78,12 @@ class LegalTextProcessor:
         try:
             db_result = await self._get_legal_explanation(text)
             if db_result:
-                return db_result
+                simple_description = self._simplify_description(db_result)
+                return simple_description
             else:
                 description = await self.generate_description(text)
-                return description
+                simple_description = self._simplify_description(description)
+                return simple_description
         finally:
             # Ensure the database connection is properly closed
             await self._disconnect_from_db()
