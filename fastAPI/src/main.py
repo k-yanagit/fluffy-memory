@@ -5,7 +5,6 @@ app = FastAPI()
 
 @app.post("/search/", response_model=SearchResponse)
 async def search_text(search: SearchText):
-
     # 以下は仮のレスポンスです。
 
     description = f"詳細な説明: {search.word}"
