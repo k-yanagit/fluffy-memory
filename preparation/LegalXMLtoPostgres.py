@@ -18,13 +18,6 @@ Example:
 
     # Define the XML file path, table name, and table columns
     xml_file_path = 'data.xml'
-    table_name = 'mytable'
-    table_columns = {
-        'column1': 'TEXT',
-        'column2': 'INTEGER',
-        'column3': 'TEXT'
-        # Add more columns as needed
-    }
 
     # Instantiate the XMLToPostgreSQL class
     xml_importer = XMLToPostgreSQL(db_params, xml_file_path, table_name, table_columns)
@@ -36,32 +29,26 @@ Example:
 import psycopg2
 import xml.etree.ElementTree as ET
 
-class XMLToPostgreSQL:
-    def __init__(self, db_params, xml_file_path, table_name, table_columns):
+class LegalXMLtoPostgres:
+    def __init__(self, db_params, xml_file_path):
         """
-        Initialize the XMLToPostgreSQL class with the necessary parameters.
+        Initialize the LegalXMLtoPostgres class with the necessary parameters.
 
         Args:
             db_params (dict): Dictionary containing database connection parameters.
             xml_file_path (str): Path to the XML file to be imported.
-            table_name (str): Name of the PostgreSQL table where data will be inserted.
-            table_columns (dict): Dictionary mapping column names to their data types.
         """
-        self.db_params = db_params
-        self.xml_file_path = xml_file_path
-        self.table_name = table_name
-        self.table_columns = table_columns
-
-    import psycopg2
-import xml.etree.ElementTree as ET
-
-class LegalXMLtoPostgres:
-    def __init__(self, db_params, xml_file_path):
         self.db_params = db_params
         self.xml_file_path = xml_file_path
 
     def create_table(self, cur):
-        # Generate SQL query to create the table if it doesn't exist
+        """
+        Create the PostgreSQL table if it doesn't exist.
+
+        Args:
+            cur: PostgreSQL cursor object.
+        """
+        # SQL query to create the table
         create_table_query = """
         CREATE TABLE IF NOT EXISTS LegalData (
             LawID SERIAL PRIMARY KEY,
@@ -92,6 +79,12 @@ class LegalXMLtoPostgres:
         cur.execute(create_table_query)
 
     def import_data(self):
+        """
+        Import data from the XML file into the PostgreSQL database.
+
+        This method parses the XML file, extracts required information, and inserts it into the database.
+
+        """
         try:
             # Connect to PostgreSQL
             conn = psycopg2.connect(**self.db_params)
@@ -129,7 +122,7 @@ class LegalXMLtoPostgres:
                     'ParagraphSentence': law.find('.//ParagraphSentence').text
                 }
 
-                # Generate SQL query to insert data into the table
+                # SQL query to insert data into the table
                 insert_query = """
                 INSERT INTO LegalData (
                     Era, Lang, LawType, Num, Year, PromulgateMonth, PromulgateDay,
