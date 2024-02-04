@@ -1,57 +1,100 @@
-import xml.etree.ElementTree as ET
+"""
+This Python module provides a class, XMLToPostgreSQL, for importing data from an XML file into a PostgreSQL database table.
+
+Usage:
+1. Create an instance of XMLToPostgreSQL with your database parameters, XML file path, table name, and column definitions.
+2. Call the import_data() method to import data from the XML file into the PostgreSQL table.
+
+Example usage:
+if __name__ == "__main__":
+    db_params = {
+        'host': 'your_host',
+        'database': 'your_database',
+        'user': 'your_user',
+        'password': 'your_password'
+    }
+    xml_file_path = 'your_xml_file.xml'
+    table_name = 'your_table_name'
+    table_columns = {
+        'column1': 'text',
+        'column2': 'integer',
+        'column3': 'text',
+        # Add definitions for other columns as needed
+    }
+
+    xml_to_postgres = XMLToPostgreSQL(db_params, xml_file_path, table_name, table_columns)
+    xml_to_postgres.import_data()
+"""
+
 import psycopg2
-import logging
+import xml.etree.ElementTree as ET
 
-# Logging configuration
-logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+class XMLToPostgreSQL:
+    def __init__(self, db_params, xml_file_path, table_name, table_columns):
+        self.db_params = db_params
+        self.xml_file_path = xml_file_path
+        self.table_name = table_name
+        self.table_columns = table_columns
 
-# Database connection information
-dbname = "your_dbname"
-user = "your_username"
-password = "your_password"
-host = "your_host"
+    def create_table(self, cur):
+        # Generate SQL query to create the table if it doesn't exist
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {self.table_name} ("
 
-# Path to your XML file
-xml_file_path = 'your_data.xml'
+        for column, data_type in self.table_columns.items():
+            create_table_query += f"{column} {data_type}, "
 
-def parse_xml_and_insert_to_db(xml_file_path, dbname, user, password, host):
-    try:
-        # Load and parse the XML file
-        tree = ET.parse(xml_file_path)
-        root = tree.getroot()
+        create_table_query = create_table_query[:-2]
+        create_table_query += ");"
 
-        # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
-        cur = conn.cursor()
+        cur.execute(create_table_query)
 
-        # Parse XML data and insert into the database
-        for part in root.findall('Part'):
-            part_title = part.find('PartTitle').text
-            # Insert part title into Parts table and get the part_id
-            cur.execute("INSERT INTO Parts (title) VALUES (%s) RETURNING part_id", (part_title,))
-            part_id = cur.fetchone()[0]
+    def insert_data(self, cur, data):
+        # Generate SQL query to insert data into the table
+        insert_query = f"INSERT INTO {self.table_name} ("
 
-            for chapter in part.findall('Chapter'):
-                chapter_num = chapter.get('Num')
-                chapter_title = chapter.find('ChapterTitle').text
-                # Insert chapter data into Chapters table and get the chapter_id
-                cur.execute("INSERT INTO Chapters (part_id, num, title) VALUES (%s, %s, %s) RETURNING chapter_id", (part_id, chapter_num, chapter_title))
-                chapter_id = cur.fetchone()[0]
+        for column in data.keys():
+            insert_query += f"{column}, "
 
-                # Similarly, parse and insert Articles, Paragraphs, Sentences, Items into the database
-                # ...
+        insert_query = insert_query[:-2]
+        insert_query += ") VALUES ("
 
-        # Commit the changes
-        conn.commit()
+        for _ in data.keys():
+            insert_query += "%s, "
 
-    except Exception as e:
-        # Log any errors that occur
-        logging.error("Error occurred", exc_info=True)
-    finally:
-        # Close the connection
-        if conn:
+        insert_query = insert_query[:-2]
+        insert_query += ");"
+
+        cur.execute(insert_query, tuple(data.values()))
+
+    def import_data(self):
+        try:
+            # Connect to PostgreSQL
+            conn = psycopg2.connect(**self.db_params)
+            cur = conn.cursor()
+
+            # Create the table
+            self.create_table(cur)
+
+            # Parse the XML file
+            tree = ET.parse(self.xml_file_path)
+            root = tree.getroot()
+
+            # Extract required information from XML data and insert into the table
+            for child in root:
+                data = {
+                    'column1': child.find('element1').text,
+                    'column2': int(child.find('element2').text),
+                    'column3': child.find('element3').text,
+                    # Add other elements as needed
+                }
+                self.insert_data(cur, data)
+
+            # Commit the transaction
+            conn.commit()
+
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            # Close the connection and perform cleanup
             cur.close()
             conn.close()
-
-# Execute the script
-parse_xml_and_insert_to_db(xml_file_path, dbname, user, password, host)
