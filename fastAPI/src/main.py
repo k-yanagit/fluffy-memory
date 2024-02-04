@@ -7,8 +7,8 @@ app = FastAPI()
 async def search_text(search: SearchText):
     # 以下は仮のレスポンスです。
 
-    description = f"詳細な説明: {search.word}"
-    rough_description = f"簡単な説明: {search.word}"
+    description = f"detail explain: {search.word}"
+    rough_description = f"brief explain: {search.word}"
     links = ["http://link1.com", "http://link2.com"]
 
     response = {
