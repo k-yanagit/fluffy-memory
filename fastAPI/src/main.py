@@ -1,21 +1,18 @@
-from fastapi import FastAPI
-from .models import SearchText, SearchResponse
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from legal_gpt_chat import LegalGPTChat # あなたのクラスをインポート
 
 app = FastAPI()
+legal_gpt_chat = LegalGPTChat()
 
-@app.post("/search/", response_model=SearchResponse)
-async def search_text(search: SearchText):
-    # 以下は仮のレスポンスです。
+class LegalTerm(BaseModel):
+    text: str
 
-    description = f"detail explain: {search.detail_return_text}"
-    rough_description = f"brief explain: {search.brief_return_text}"
-    links = search.links
+@app.post("/chat/")
+async def chat(legal_term: LegalTerm):
+    try:
+        response = legal_gpt_chat.chat_text_to_json(legal_term.text)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    response = {
-        "text": {
-            "description": description,
-            "rough_description": rough_description
-        },
-        "link": links
-    }
-    return response
