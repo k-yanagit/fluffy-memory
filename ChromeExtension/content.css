@@ -1,0 +1,43 @@
+/* popup.css */
+#custom-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 400px; /* 幅を400pxに調整 */
+    height: 300px; /* 高さを200pxに調整 */
+    background-color: powderblue;
+    opacity: 0.95;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 20px; /* パディングを20pxに調整 */
+    z-index: 10000;
+    overflow: auto; /* コンテンツが多い場合はスクロール可能にする */
+  }
+
+  #custom-popup-content {
+    overflow-y: auto;
+  }
+
+  #question {
+    font-weight: bold;
+  }
+
+  #searchButton {
+    background-color: palegreen; /* 薄い灰色 */
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #searchButton img {
+    width: 20px; /* アイコンのサイズ */
+    height: 20px; /* アイコンのサイズ */
+    margin-right: 5px;
+  }
+
+  #searchButton:hover {
+    background-color: rgb(180, 237, 180); /* ホバー時の色 */
+  }

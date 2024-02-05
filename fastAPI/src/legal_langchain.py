@@ -4,25 +4,20 @@ from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
 from dotenv import load_dotenv
 
+load_dotenv()
+api_key = os.getenv("OPENAI_API_KEY")
+
 class LegalGPTChat:
 
     def __init__(self):
-        load_dotenv()
+        llm = ChatOpenAI(api_key=api_key, model="gpt-3.5-turbo", temperature=0,)
 
-    def _set_llm(self, model: str = "gpt-3.5-turbo"):
-        api_key = os.getenv("OPENAI_API_KEY")
-        llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, api_key=api_key)
-
-        return llm
-
-
-    def _set_prompt(self):
         template = """
         # あなたは日本の弁護士です。
         # 小学生でも分かる言葉を使った説明を考えてください。
             - 分かりやすい言葉を使った説明を考えてください。
                 - 説明に法律用語を使わないでください。
-            - 出力は多くても2文、140字です。
+            - 出力は多くても2文、**100字**です。
             - 用語の**正しい**説明を考えてください。
             - 適宜、**法令**を参照してください。
             - 同じ言葉を繰り返し使うのは避けてください。
@@ -38,11 +33,9 @@ class LegalGPTChat:
             template=template
         )
 
-        return prompt
+        self.chain = LLMChain(llm=llm, prompt=prompt)
 
-    def _set_chain(self, llm=_set_llm(), prompt=_set_prompt):
-        chain = LLMChain(llm=llm, prompt=prompt, verbose=True)
-        return chain
+    def set_chain(self, text:str):
+        return self.chain(text)
 
-    def chat_text_to_json(self, text: str, chain=_set_chain()):
-        return chain(text)
+print(LegalGPTChat().set_chain("著作権"))

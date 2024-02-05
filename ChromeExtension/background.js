@@ -1,12 +1,15 @@
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      const apiUrl = 'API_ENDPOINT'; // ここにAPIのエンドポイントURLをセット
-      fetch(apiUrl, {
+      // 選択されたテキストでストレージを更新
+      chrome.storage.local.set({question: request.question, description: '少々お待ちください...'});
+
+      // APIにリクエストを送る
+      fetch('http://0.0.0.0:8000/chat/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({question: request.question})
+        body: JSON.stringify({text: request.question})
       })
       .then(response => {
         if (!response.ok) {
@@ -15,16 +18,15 @@ chrome.runtime.onMessage.addListener(
         return response.json();
       })
       .then(data => {
+        console.log('API response:', data);
+        // APIからのレスポンスで 'text' キーの内容を取得
         const description = data.text;
+        // 取得したdescriptionを保存
         chrome.storage.local.set({question: request.question, description: description});
-        chrome.scripting.executeScript({
-          target: {tabId: sender.tab.id},
-          files: ['popup.js']
-        });
       })
       .catch(error => {
         console.error('Error:', error);
-        chrome.storage.local.set({description: 'Error fetching data.'});
+        chrome.storage.local.set({description: 'エラーが発生しました。'});
       });
     }
   );

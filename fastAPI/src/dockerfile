@@ -6,13 +6,11 @@ WORKDIR /app
 
 # 必要なパッケージのインストール
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 # ソースコードをコンテナ内にコピー
 COPY . .
-
-# 環境変数
-ENV OPENAI_API_KEY=your_openai_api_key_here
 
 # サーバーを起動
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
