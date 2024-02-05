@@ -5,22 +5,24 @@ Navigate Japanese legal texts with ease. This tool provides instant insights and
 
 ```
 .
+├── ChromeExtension
+│   ├── background.js
+│   ├── content.css
+│   ├── content.js
+│   ├── images
+│   │   ├── google_icon.png
+│   │   ├── icon128.png
+│   │   ├── icon16.png
+│   │   └── icon48.png
+│   └── manifest.json
 ├── LICENSE
 ├── README.md
-├── fastAPI
-│   └── src
-│       ├── database
-│       │   ├── __init__.py
-│       │   └── legal_terms_db.py
-│       ├── main.py
-│       ├── models.py
-│       ├── requirements.txt
-│       ├── summarizer
-│       │   ├── __init__.py
-│       │   └── summarizer.py
-│       └── tests
-│           ├── __init__.py
-│           └── test_summarizer.py
-└── preparation
-    └── LegalXMLtoPostgres.py
+└── fastAPI
+    ├── dockerfile
+    └── src
+        ├── docker-compose.yml
+        ├── dockerfile
+        ├── legal_langchain.py
+        ├── main.py
+        └── requirements.txt
 ```
