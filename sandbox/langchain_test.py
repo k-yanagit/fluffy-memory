@@ -2,10 +2,13 @@ import os
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
+from dotenv import load_dotenv
 
-os.environ["OPENAI_API_KEY"] = "hoge"
+load_dotenv()
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+api_key = os.getenv("OPENAI_API_KEY")
+
+llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, api_key=api_key)
 
 template = """
 # あなたは日本の弁護士です。
