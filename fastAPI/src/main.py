@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from legal_gpt_chat import LegalGPTChat # あなたのクラスをインポート
+from legal_langchain import LegalGPTChat # あなたのクラスをインポート
 
 app = FastAPI()
 legal_gpt_chat = LegalGPTChat()
