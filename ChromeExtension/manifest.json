@@ -1,0 +1,35 @@
+{
+    "manifest_version": 3,
+    "name": "Text Fetcher",
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "scripting",
+        "tabs"
+      ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "css": ["content.css"],
+        "resources": ["images/google_icon.png"]
+      }
+    ],
+    "action": {
+      "default_icon": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+      }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["images/icon16.png", "images/icon48.png", "images/icon128.png, google_icon.png"],
+        "matches": ["<all_urls>"]
+      }
+    ]
+  }
