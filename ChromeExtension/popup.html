@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result Popup</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 10px;
+            padding: 10px;
+            width: 300px;
+        }
+        #question {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #description {
+            margin-bottom: 20px;
+        }
+        #searchButton {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #searchButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <p id="question"></p>
+        <p id="description"></p>
+        <button id="searchButton">Googleで検索</button>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
