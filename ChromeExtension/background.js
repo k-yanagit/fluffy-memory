@@ -6,16 +6,16 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// コンテキストメニュー項目がクリックされたときの処理
+// Processing when a context menu item is clicked
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "showCustomPopup") {
-    // コンテンツスクリプトにメッセージを送信してポップアップを表示
+    // Send message to content script to display popup
     chrome.tabs.sendMessage(tab.id, {
       action: "showPopup",
       text: info.selectionText
     });
 
-    // ここでAPIリクエストを行う
+    // Make API request
     fetch('http://0.0.0.0:8000/chat/', {
       method: 'POST',
       headers: {
@@ -30,12 +30,12 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       return response.json();
     })
     .then(data => {
-      // APIからのレスポンスで 'text' キーの内容を取得し、コンテンツスクリプトに送信して内容を更新
+      // Get the contents of the 'text' key in the response from the API and send it to the content script to update the contents
       chrome.tabs.sendMessage(tab.id, {action: "updateDescription", description: data.text});
     })
     .catch(error => {
       console.error('Error:', error);
-      // エラーメッセージをコンテンツスクリプトに送信
+      // Send error messages to content scripts
       chrome.tabs.sendMessage(tab.id, {action: "updateDescription", description: 'エラーが発生しました。'});
     });
   }

@@ -2,7 +2,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.action === "showPopup") {
     showCustomPopup(message.text);
   } else if (message.action === "updateDescription") {
-    // ポップアップの説明文を更新
+    // Updated pop-up descriptions
     const descriptionElement = document.getElementById('description');
     if (descriptionElement) {
       descriptionElement.textContent = `解説: ${message.description}`;
@@ -11,17 +11,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 });
 
 function showCustomPopup(selectedText) {
-  // 既存のポップアップがあれば削除
+  // Remove existing pop-ups, if any
   const existingPopup = document.getElementById('custom-popup');
   if (existingPopup) {
     existingPopup.remove();
   }
 
 
-  // ポップアップの作成
+  // Make popup
   const popupDiv = document.createElement('div');
   popupDiv.id = 'custom-popup';
+
   const imageUrl = chrome.runtime.getURL('images/google_icon.png');
+　
   const closeButton = `<button id="closeButton" style="float: right;">&times;</button>`;
   popupDiv.innerHTML = closeButton + `
     <div id="custom-popup-content">

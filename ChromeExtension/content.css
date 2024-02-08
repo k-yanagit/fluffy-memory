@@ -3,14 +3,14 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 400px; /* 幅を400pxに調整 */
-    height: 300px; /* 高さを200pxに調整 */
+    width: 400px;
+    height: 300px;
     background-color: powderblue;
     opacity: 0.95;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 20px; /* パディングを20pxに調整 */
+    padding: 20px;
     z-index: 10000;
-    overflow: auto; /* コンテンツが多い場合はスクロール可能にする */
+    overflow: auto;
   }
 
   #custom-popup-content {
@@ -22,7 +22,7 @@
   }
 
   #searchButton {
-    background-color: palegreen; /* 薄い灰色 */
+    background-color: palegreen;
     border: none;
     padding: 10px;
     border-radius: 5px;
@@ -33,11 +33,26 @@
   }
 
   #searchButton img {
-    width: 20px; /* アイコンのサイズ */
-    height: 20px; /* アイコンのサイズ */
+    width: 20px;
+    height: 20px;
     margin-right: 5px;
   }
 
   #searchButton:hover {
-    background-color: rgb(180, 237, 180); /* ホバー時の色 */
+    background-color: rgb(180, 237, 180);
   }
+
+#closeButton {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+#closeButton:hover {
+  color: #666; }
