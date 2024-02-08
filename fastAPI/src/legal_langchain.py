@@ -23,5 +23,3 @@ class LegalGPTChat:
 
     def set_chain(self, text:str):
         return self.chain(text)
-
-print(os.getenv("PROMPT"))
