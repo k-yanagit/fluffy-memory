@@ -1,9 +1,9 @@
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      // 選択されたテキストでストレージを更新
-      chrome.storage.local.set({question: request.question, description: '少々お待ちください...'});
+      // Update storage with selected text.
+      chrome.storage.local.set({question: request.question, description: '少々お待ちください...'}); // TODO: While waiting for a response, "..." is moving.
 
-      // APIにリクエストを送る
+      // Send a request to the API
       fetch('http://0.0.0.0:8000/chat/', {
         method: 'POST',
         headers: {
