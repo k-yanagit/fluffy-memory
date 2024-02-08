@@ -3,3 +3,4 @@
 .env
 *.png
 fastAPI/src/__pycache__/*
+.tool-versions
