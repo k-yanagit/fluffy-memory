@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
-
+print(os.getenv("PROMPT"))
+print(api_key)
 class LegalGPTChat:
 
     def __init__(self):
@@ -23,3 +24,11 @@ class LegalGPTChat:
 
     def set_chain(self, text:str):
         return self.chain(text)
+
+"""
+        aaa
+        aaa
+
+
+"""
+

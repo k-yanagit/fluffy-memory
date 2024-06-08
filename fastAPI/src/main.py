@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from legal_langchain import LegalGPTChat
 import logging
@@ -12,8 +11,10 @@ logger.setLevel(logging.INFO)
 app = FastAPI()
 legal_gpt_chat = LegalGPTChat()
 
+
 class LegalTerm(BaseModel):
     text: str
+
 
 @app.post("/chat/")
 async def chat(legal_term: LegalTerm):
